@@ -1,0 +1,4 @@
+*.pyd
+build
+build.log.example
+__pycache__
