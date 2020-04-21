@@ -1,0 +1,15 @@
+*.exe 
+*.bin
+*.map
+*.o
+*.dis
+build
+debug
+*.o
+*.as
+*.elf
+*.rpt
+*.nm
+*.size
+*.pdf
+*.wav
