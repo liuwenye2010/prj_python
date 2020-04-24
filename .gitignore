@@ -13,3 +13,5 @@ debug
 *.size
 *.pdf
 *.wav
+__pycache__
+*.spec

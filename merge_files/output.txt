@@ -1,0 +1,8 @@
+
+######### >>> file1.txt >>>
+file1_contents
+######### <<< file1.txt <<<
+
+######### >>> file2.txt >>>
+file2_contents
+######### <<< file2.txt <<<
