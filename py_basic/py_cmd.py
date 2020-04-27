@@ -44,6 +44,7 @@ import twisted  # pip install twisted
 # import py2exe       #pip install py2exe
 # import pyinstaller  #pip install pyinstaller
 import argparse
+import signal 
 
 
 def test_argparse():
@@ -216,6 +217,14 @@ def test_convert_windows_path_2_linux_path():
     sh_path = '/'.join(sh_path.split('\\'))  # transform the windows path to linux path
     print(sh_path)
 
+def sig_handler(sig, f):
+    print("signal hit and exit")
+    exit(1)
+
+
+
+
+
 
 if __name__ == '__main__':
     print("Test py_cmd start===============\n")
@@ -223,5 +232,12 @@ if __name__ == '__main__':
     #test_os_system()
     #test_argparse()
     # std_lib_test()
-    test_os_walk()
+    # test_os_walk()
+    signal.signal(signal.SIGINT, sig_handler)
+    signal.signal(signal.SIGTERM, sig_handler)
+    for x in range(1, 10):
+        time.sleep(1)
+        print("sleep ..count:{0}".format(x))
+        
+
     print("Test py_cmd end ============  \n")
