@@ -1,5 +1,5 @@
 import struct
-
+import sys
 # with open('etc.zip', 'rb') as f:
 #     data = f.read()
 
@@ -46,7 +46,11 @@ def parse_chunk_table(file_name):
     print('='*160)
 
 def main():
-    parse_chunk_table("chunk_table.binary")
+    if(len(sys.argv) > 1):
+        file_name = sys.argv[1]
+    else:
+        file_name = "chunk_table.binary"
+    parse_chunk_table(file_name)
 
 
 if __name__ == '__main__':
