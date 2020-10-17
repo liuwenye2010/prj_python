@@ -14,5 +14,5 @@ for i in range(int(duration * sampleRate)):
     data = struct.pack('<h', value)
     wavef.writeframesraw( data )
 
-wavef.writeframes('')
+
 wavef.close()

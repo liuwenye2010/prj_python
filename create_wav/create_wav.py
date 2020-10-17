@@ -43,5 +43,5 @@ for i in range(int(nSamples)):
     data = packSoundFrame(nChannels, sampleWidth, [l,r])
     wavef.writeframesraw( data )
 
-wavef.writeframes('')
+#wavef.writeframes('')
 wavef.close()
