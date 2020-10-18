@@ -94,7 +94,7 @@ def parse_timestamp(text):
 
 def iter_records(file_name,column_name):
     Column = namedtuple('Column', 'src dest convert')
-    columns = [Column(column_name, column_name, int),]
+    columns = [Column(column_name, column_name, int),] # TODO: check the int will limit to 16bit samplre widith ?
     with open(file_name, 'rt') as fp:
         reader = csv.DictReader(fp)
         for csv_record in reader:
@@ -109,12 +109,45 @@ def csv2wave_mono(sampleRate,sampleWidth,input_file, output_file):
     wavef.setnchannels(1) # 1: mono
     wavef.setsampwidth(sampleWidth)  #sampleWidth -- size of data: 1 = 8 bits, 2 = 16, 3 = invalid, 4 = 32, etc... 
     wavef.setframerate(sampleRate)
-
+    pad_j = 0
+    record_data = 0
     for i, record in enumerate(iter_records(input_file,column_name_to_parse)):
         #if i >= 10:
         #    break
 		#pprint(record)
-        data = struct.pack('<h', record[column_name_to_parse])
+        if (sampleWidth ==4 ):
+            if(pad_j == 0):
+                record_data = int(record[column_name_to_parse])
+                pad_j = pad_j + 1
+                continue
+            elif (pad_j == 3):
+                record_data = int(record[column_name_to_parse]) *(256**pad_j) + record_data
+                if (record_data> 0x7FFFFFFF):
+                    record_data  = record_data - 0x7FFFFFFF
+                data = struct.pack('<i', record_data)
+                pad_j = 0
+            else:
+                record_data = int(record[column_name_to_parse])*(256**pad_j) + record_data
+                pad_j = pad_j + 1
+                continue 
+        elif (sampleWidth == 2 ):
+            if(pad_j == 0):
+                record_data = int(record[column_name_to_parse])
+                pad_j = pad_j + 1
+                continue
+            else:
+                record_data = int(record[column_name_to_parse]) *(256**pad_j) + record_data
+                if (record_data> 32767):
+                    record_data  = record_data - 65536
+                data = struct.pack('<h', record_data)
+                pad_j = 0
+    
+        elif (sampleWidth == 1 ):
+            data = struct.pack('<b', record[column_name_to_parse])
+        else:
+            print("\n[ERROR]:Unsupported sampleWidth: {0}  !\n".format(sampleWidth))
+            sys.exit(-1)
+
         wavef.writeframesraw( data )
     wavef.close()
 
