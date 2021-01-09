@@ -1,4 +1,4 @@
-"""Load & convert data from CSV file and convert into Mono Wave file"""
+"""Load & convert data (should be decimal) from CSV file and convert into Mono Wave file"""
 import csv
 import wave
 import struct
@@ -20,7 +20,7 @@ column_name_to_parse    = "MOSI"
 def cmd_parser():
     global column_name_to_parse 
     global default_file_to_convert
-    parser = argparse.ArgumentParser(description="This program load one column data from CSV file and convert into one mono wave file")
+    parser = argparse.ArgumentParser(description="This program load one column data (should be decimal) from CSV file and convert into one mono wave file")
     parser.add_argument("-i", dest="input" ,required=False, help="input file name (e.g audio.csv)")
     parser.add_argument("-c", dest="column_name" ,required=False, help="column name to parse (e.g MOSI)")
     parser.add_argument("-s", dest="sample_rate" ,required=False, help="sample rate for wave (e.g 16000)")
