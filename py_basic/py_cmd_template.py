@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 import csv
 import wave
 import struct
@@ -153,7 +154,6 @@ def main():
         sys.exit(-1)
 
     print("Done")
-    parse_address()
     pass 
 
 

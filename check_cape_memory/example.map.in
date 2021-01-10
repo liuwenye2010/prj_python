@@ -1,0 +1,42 @@
+External symbols:
+    __dso_handle = 0x0
+    _ctors_end = 0x0
+    _ctors_start = 0x0
+    _dtors_end = 0x0
+    _dtors_start = 0x0
+    _pc_end = 0x2d9b83
+    _pc_start = 0x0
+    _segment_end_PCA_PM = 0x2a6e3
+    _segment_end_PCB_PM = 0x2d9b83
+    _segment_end_PCD_PM = 0x4ce9
+    _segment_end_PMR_PM = 0x1c0
+    _segment_end_PN_PM = 0x2890d4
+    _segment_end_PR_PM = 0x201526
+    _segment_end_XDD_XM = 0xa01052b8
+    _segment_end_XPA_XM = 0x1793a0
+    _segment_end_XPB_XM = 0x1cdc8c
+    _segment_end_XS_XM = 0x110520
+    _segment_end_YMA_YM = 0x8001f9dc
+    _segment_end_YMB_YM = 0x6001fa59
+    _segment_end_YMD_YM = 0xc000
+    _segment_start_PCA_PM = 0x20000
+    _segment_start_PCB_PM = 0x2d0000
+    _segment_start_PCD_PM = 0x200
+    _segment_start_PMR_PM = 0x0
+    _segment_start_PN_PM = 0x285000
+    _segment_start_PR_PM = 0x201000
+    _segment_start_XDD_XM = 0xa0104000
+    _segment_start_XPA_XM = 0x120000
+    _segment_start_XPB_XM = 0x18d000
+    _segment_start_XS_XM = 0x110000
+    _segment_start_YMA_YM = 0x8000c000
+    _segment_start_YMB_YM = 0x6000c000
+    _segment_start_YMD_YM = 0xc000
+    _sp_end_XM = 0x1fc00
+    _sp_start_XM = 0x20000
+
+
+Section summary for memory 'PM':
+
+      .text  File
+ ----------  ----------
