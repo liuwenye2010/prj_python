@@ -41,7 +41,7 @@ def cmd_parser():
         output_file = args.output
         pass
     else:
-        output_file = os.path.join(os.path.dirname(__file__),os.path.basename(input_map_file)) + "_out.map"
+        output_file = os.path.join(os.path.dirname(__file__),os.path.basename(input_map_file)) + "_segments_usage.map"
         print("[Warning] not input argument for output_file_name found, set output_file_name as default ==> {0}".format(output_file))
     
     print("input_map_file      :{0}".format(input_map_file))
@@ -149,8 +149,12 @@ def main():
             input_map_file     =  os.path.join(dir_path,input_map_file)
         map_lines_file     =  os.path.join(dir_path,'map_lines.map')
         get_file_lines_between_strs(input_map_file,map_lines_file,'External symbols:','Section summary for memory')
+        #get_file_lines_regex(input_map_file,map_lines_file,r'^External symbols:.*Section summary for memory')
+
         with open(map_lines_file, 'rt') as file_in:
             map_lines = file_in.read()
+        if os.path.isfile(map_lines_file):
+            os.remove(map_lines_file)
             
         if (g_debug_mode):
             input_autoconf_file     =  os.path.join(dir_path,input_autoconf_file)
@@ -159,6 +163,8 @@ def main():
         if (g_debug_mode):
             with open(autoconf_lines_file, 'rt') as file_in:
                 autoconf_lines = file_in.read()
+        if os.path.isfile(autoconf_lines_file):
+            os.remove(autoconf_lines_file)
         #print ("Parse the txt content")
         segments_map    = parse_map_address(map_lines)
         segments_confgs = parse_autoconf_address(autoconf_lines)
