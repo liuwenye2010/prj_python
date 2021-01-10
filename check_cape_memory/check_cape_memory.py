@@ -41,7 +41,7 @@ def cmd_parser():
         output_file = args.output
         pass
     else:
-        output_file = input_map_file + "_out.map"
+        output_file = os.path.join(os.path.dirname(__file__),os.path.basename(input_map_file)) + "_out.map"
         print("[Warning] not input argument for output_file_name found, set output_file_name as default ==> {0}".format(output_file))
     
     print("input_map_file      :{0}".format(input_map_file))
@@ -77,6 +77,9 @@ def get_file_lines_regex(in_filename, out_filename, regex_str):
                 p_re = re.compile(regex_str)
                 out_file_lines = p_re.findall(in_file_content)
                 f_out.writelines(out_file_lines)
+                #print(''.join(out_file_lines))
+                out_str = ''.join(out_file_lines)
+                return out_str
     except OSError as err:
         print("OS error: {0}".format(err))
         sys.exit(2)
@@ -148,12 +151,14 @@ def main():
         get_file_lines_between_strs(input_map_file,map_lines_file,'External symbols:','Section summary for memory')
         with open(map_lines_file, 'rt') as file_in:
             map_lines = file_in.read()
+            
         if (g_debug_mode):
             input_autoconf_file     =  os.path.join(dir_path,input_autoconf_file)
         autoconf_lines_file  = os.path.join(dir_path,'autoconf_lines.map')
-        get_file_lines_regex(input_autoconf_file, autoconf_lines_file , r'CONFIG_SEGMENT_.*?\n')
-        with open(autoconf_lines_file, 'rt') as file_in:
-            autoconf_lines = file_in.read()
+        autoconf_lines = get_file_lines_regex(input_autoconf_file, autoconf_lines_file , r'CONFIG_SEGMENT_.*?\n')
+        if (g_debug_mode):
+            with open(autoconf_lines_file, 'rt') as file_in:
+                autoconf_lines = file_in.read()
         #print ("Parse the txt content")
         segments_map    = parse_map_address(map_lines)
         segments_confgs = parse_autoconf_address(autoconf_lines)
