@@ -168,39 +168,49 @@ def main():
         #print ("Parse the txt content")
         segments_map    = parse_map_address(map_lines)
         segments_confgs = parse_autoconf_address(autoconf_lines)
-        for map_item in segments_map:
-            for config_item in segments_confgs:
-                flag = 0
-                #PCD,PCA,PCB,YMD,XS,PN  (no PR in config_item)
-                if map_item['seg_sub_type'] == config_item['seg_sub_type']:
-                    flag = 1 
-                #YMA == YMX
-                if ((map_item['seg_sub_type'] == 'YMA') and (config_item['seg_sub_type'] == 'YMX')):
-                    flag = 1
-                #YMB== YMX
-                if ((map_item['seg_sub_type'] == 'YMB') and (config_item['seg_sub_type'] == 'YMX')):
-                    flag = 1
-                #XPA == XMA
-                if ((map_item['seg_sub_type'] == 'XPA') and (config_item['seg_sub_type'] == 'XMA')):
-                    flag = 1
-                #XPB == XMB 
-                if ((map_item['seg_sub_type'] == 'XPB') and (config_item['seg_sub_type'] == 'XMB')):
-                    flag = 1
-                #XDD == XMD
-                if ((map_item['seg_sub_type'] == 'XDD') and (config_item['seg_sub_type'] == 'XMD')):
-                    flag = 1
-                
-                if flag == 1: 
-                    map_item['config_size'] = config_item['config_size']
-                    map_item['unused_size'] = hex(int(map_item['config_size'],16) - int(map_item['seg_size'],16)) 
-                    map_item['unused_size'] = map_item['unused_size'] + "(" + str(int(map_item['unused_size'],16)) + ")"
-                    print("type: {0:<4}, sub_type: {1:<4}, seg range: 0x{2:08x} ~ 0x{3:08x} , used size: {4:<8} bytes, config size: {5:<8}, unused size {6:<16}".format( map_item['seg_type'], map_item['seg_sub_type'],int(map_item['seg_start'],16),int(map_item['seg_end'],16),map_item['seg_size'],map_item['config_size'],map_item['unused_size']))
-                
-
-        with open(output_file, "w") as fp:
-            json.dump(segments_map, fp, indent=4)
-            print ("Check output_file !")
+        total_unused = 0 
+        with open(output_file, 'wt') as f_out:
+            out_str = "== Memory Segementation Usage Summary =="
+            print(out_str)
+            f_out.write(out_str +'\n')
+            for map_item in segments_map:
+                for config_item in segments_confgs:
+                    flag = 0
+                    #PCD,PCA,PCB,YMD,XS,PN  (no PR in config_item)
+                    if map_item['seg_sub_type'] == config_item['seg_sub_type']:
+                        flag = 1 
+                    #YMA == YMX
+                    if ((map_item['seg_sub_type'] == 'YMA') and (config_item['seg_sub_type'] == 'YMX')):
+                        flag = 1
+                    #YMB== YMX
+                    if ((map_item['seg_sub_type'] == 'YMB') and (config_item['seg_sub_type'] == 'YMX')):
+                        flag = 1
+                    #XPA == XMA
+                    if ((map_item['seg_sub_type'] == 'XPA') and (config_item['seg_sub_type'] == 'XMA')):
+                        flag = 1
+                    #XPB == XMB 
+                    if ((map_item['seg_sub_type'] == 'XPB') and (config_item['seg_sub_type'] == 'XMB')):
+                        flag = 1
+                    #XDD == XMD
+                    if ((map_item['seg_sub_type'] == 'XDD') and (config_item['seg_sub_type'] == 'XMD')):
+                        flag = 1
+                    
+                    if flag == 1: 
+                        map_item['config_size'] = config_item['config_size']
+                        map_item['unused_size'] = hex(int(map_item['config_size'],16) - int(map_item['seg_size'],16)) 
+                        total_unused += int(map_item['unused_size'],16)
+                        map_item['unused_size'] = map_item['unused_size'] + "(" + str(int(map_item['unused_size'],16)) + ")"
+                        map_item['seg_size'] = map_item['seg_size'] + "(" + str(int(map_item['seg_size'],16)) + ")"
+                        out_str = "type: {0:<4}, sub_type: {1:<4}, seg range: 0x{2:08x} ~ 0x{3:08x} , used size: {4:<16} , config size: {5:<8}, unused size: {6:<16} bytes".format( map_item['seg_type'], map_item['seg_sub_type'],int(map_item['seg_start'],16),int(map_item['seg_end'],16),map_item['seg_size'],map_item['config_size'],map_item['unused_size'])
+                        print(out_str)
+                        f_out.write(out_str+'\n')
+            out_str  = "== Total Unused(Hole) Memory: {0:<8} bytes ==".format(total_unused)
+            print (out_str)
+            f_out.write(out_str+'\n')
+            f_out.close()
         if (g_debug_mode):
+            with open("segments_map_updated.json", "w") as fpx:
+                json.dump(segments_map, fpx, indent=4)
             Popen("notepad {}".format(output_file)) # non-block
         
     except KeyboardInterrupt:
@@ -208,8 +218,8 @@ def main():
         sys.exit(-1)
     except OSError as err:
         print("[ERR] OS error: {0}".format(err))
-    except ValueError as err:
-        print("[ERR] ValueError: {0}".format(err))
+    #except ValueError as err:
+    #    print("[ERR] ValueError: {0}".format(err))
     #except:
     #    print("[ERR] Unknown error")
     finally:
