@@ -51,7 +51,7 @@ if __name__ == "__main__":
     file_in        = os.path.join(dir_path,'data.bin')
     crc32_demo1()
     crc32_demo2(file_in) #32bit
-	print("the crc32 value from the crc32.c should same as python result [crc32 data.bin]")
+    print("the crc32 value from the crc32.c should same as python result [crc32 data.bin]")
     md5_demo(file_in)  #128bit
     sha1_demo(file_in) #160bit
 	
