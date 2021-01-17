@@ -1,6 +1,6 @@
 #!/usr/bin/perl -w
 # filter_bin_file
-
+#use strict 
 use Getopt::Long;
 use File::Basename;
 

@@ -17,3 +17,5 @@ __pycache__
 *.spec
 *.raw
 *.json
+*.npy
+*.bak
