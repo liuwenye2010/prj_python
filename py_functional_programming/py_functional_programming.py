@@ -144,3 +144,6 @@ if __name__ == "__main__":
     #lambda (装逼用，多数时候用def 会更加的清晰， 看场景了)
     adder = lambda x, y: x+y
     print_assign = lambda name, value: name + '=' + str(value)
+
+
+    #try with git$ git config --global credential.helper wincred
