@@ -1,0 +1,11 @@
+strict digraph  {
+IO_IN;
+SBC;
+AMP;
+SRC;
+IO_OUT;
+IO_IN -> SBC;
+SBC -> AMP;
+AMP -> SRC;
+SRC -> IO_OUT;
+}
