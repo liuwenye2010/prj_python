@@ -1,0 +1,57 @@
+{
+    "directed": true,
+    "multigraph": false,
+    "graph": {},
+    "nodes": [
+        {
+            "id": "IO_I2S1_RX"
+        },
+        {
+            "id": "SBC"
+        },
+        {
+            "id": "AMP"
+        },
+        {
+            "id": "SRC"
+        },
+        {
+            "id": "IO_I2S1_TX"
+        },
+        {
+            "id": "IO_I2S0_RX"
+        },
+        {
+            "id": "IO_I2S0_TX"
+        },
+        {
+            "id": "SBC2"
+        }
+    ],
+    "links": [
+        {
+            "source": "IO_I2S1_RX",
+            "target": "SBC"
+        },
+        {
+            "source": "SBC",
+            "target": "AMP"
+        },
+        {
+            "source": "AMP",
+            "target": "SRC"
+        },
+        {
+            "source": "SRC",
+            "target": "IO_I2S1_TX"
+        },
+        {
+            "source": "IO_I2S0_RX",
+            "target": "SBC2"
+        },
+        {
+            "source": "SBC2",
+            "target": "IO_I2S0_TX"
+        }
+    ]
+}
