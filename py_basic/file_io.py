@@ -57,6 +57,10 @@ def file_demo():
         fp.seek(0) # seek to start to line 
         for line in iter(fp.readline, ''):
             print(line)
+    #read line by line using functional method  
+    #for line in in_filename:
+    #    print(line)
+        # do something for each line
 
 
 
