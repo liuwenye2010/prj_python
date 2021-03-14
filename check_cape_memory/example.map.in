@@ -40,3 +40,8 @@ Section summary for memory 'PM':
 
       .text  File
  ----------  ----------
+    .....
+    0x0000bb22..0x0000bb3f (        30 items) : string.o(C:\Synopsys\ASIP Programmer\win\lib/runtime/lib/Release/libc.a)::__Pvoid_memcpy___Pvoid___Pvoid___uint (Function, Global, .text) (stack frame size = 0)
+    0x0000bb40..0x0000bb5a (        27 items) : string.o(C:\Synopsys\ASIP Programmer\win\lib/runtime/lib/Release/libc.a)::__Pvoid_memset___Pvoid___sint___uint (Function, Global, .text) (stack frame size = 0)
+    0x0000c000..0x0001ffff (     81920 items) : Reserved
+	.....

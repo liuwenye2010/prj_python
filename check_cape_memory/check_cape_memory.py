@@ -140,6 +140,16 @@ def parse_map_address (test_str):
                 json.dump(segments_map, fp, indent=4)
     return segments_map
 
+def  parse_pcd_end (test_str,config_pcd_size):
+    pcd_end = config_pcd_size
+    y = "0x{0:08x}".format(int(config_pcd_size,16))
+    regex = r"\s{4,}(0x\w{8,8})\.\.(0x\w{8,8})\s\(.*\)\s:\s(.*\.text.*)\s{4,}("+ re.escape(y) + ")\.\.(0x\w{8,8})\s\(.*\)\s:\sReserved"
+    matches = re.finditer(regex, test_str, re.MULTILINE)
+    for matchNum, match in enumerate(matches, start=1):
+        pcd_end = "0x{0:x}".format(int(match.group(2),16))
+        break
+    return pcd_end
+
 def main():
     input_map_file,input_autoconf_file, output_file =  cmd_parser()
     try:
@@ -147,6 +157,10 @@ def main():
         dir_path       = os.path.dirname(__file__)
         if (g_debug_mode):
             input_map_file     =  os.path.join(dir_path,input_map_file)
+
+        with open(input_map_file, 'rt') as file_in:
+            map_raw_text_lines = file_in.read()
+
         map_lines_file     =  os.path.join(dir_path,'map_lines.map')
         get_file_lines_between_strs(input_map_file,map_lines_file,'External symbols:','Section summary for memory')
         #get_file_lines_regex(input_map_file,map_lines_file,r'^External symbols:.*Section summary for memory')
@@ -170,12 +184,13 @@ def main():
         segments_confgs = parse_autoconf_address(autoconf_lines)
         total_unused = 0 
         with open(output_file, 'wt') as f_out:
-            out_str = "== Memory Segementation Usage Summary =="
+            out_str = "== Memory Segments Usage Summary =="
             print(out_str)
             f_out.write(out_str +'\n')
             for map_item in segments_map:
                 for config_item in segments_confgs:
                     flag = 0
+                    segment_dumplicated = 0
                     #PCD,PCA,PCB,YMD,XS,PN  (no PR in config_item)
                     if map_item['seg_sub_type'] == config_item['seg_sub_type']:
                         flag = 1 
@@ -191,20 +206,34 @@ def main():
                     #XPB == XMB 
                     if ((map_item['seg_sub_type'] == 'XPB') and (config_item['seg_sub_type'] == 'XMB')):
                         flag = 1
+                    #XPH == XMH
+                    if ((map_item['seg_sub_type'] == 'XPH') and (config_item['seg_sub_type'] == 'XMH')):
+                        flag = 1
                     #XDD == XMD
                     if ((map_item['seg_sub_type'] == 'XDD') and (config_item['seg_sub_type'] == 'XMD')):
                         flag = 1
+                    if ((map_item['seg_sub_type'] == 'XDD') or (map_item['seg_sub_type'] == 'PCD') or (map_item['seg_sub_type'] == 'YMD')):
+                        segment_dumplicated = 1
                     
+                    if ((map_item['seg_sub_type'] == 'PCD') and (config_item['seg_sub_type'] == 'PCD')):
+                        pcd_end_fixed = parse_pcd_end(map_raw_text_lines,config_item['config_size'])
+                        if(pcd_end_fixed != config_item['config_size']):
+                            map_item['seg_size'] = pcd_end_fixed
                     if flag == 1: 
                         map_item['config_size'] = config_item['config_size']
                         map_item['unused_size'] = hex(int(map_item['config_size'],16) - int(map_item['seg_size'],16)) 
-                        total_unused += int(map_item['unused_size'],16)
+                        total_unused += 2**segment_dumplicated*(int(map_item['unused_size'],16))
                         map_item['unused_size'] = map_item['unused_size'] + "(" + str(int(map_item['unused_size'],16)) + ")"
                         map_item['seg_size'] = map_item['seg_size'] + "(" + str(int(map_item['seg_size'],16)) + ")"
-                        out_str = "type: {0:<4}, sub_type: {1:<4}, seg range: 0x{2:08x} ~ 0x{3:08x} , used size: {4:<16} , config size: {5:<8}, unused size: {6:<16} bytes".format( map_item['seg_type'], map_item['seg_sub_type'],int(map_item['seg_start'],16),int(map_item['seg_end'],16),map_item['seg_size'],map_item['config_size'],map_item['unused_size'])
+                        if segment_dumplicated:
+                             map_item['unused_size'] =  map_item['unused_size'] + '[*]'
+                             map_item['seg_size'] = map_item['seg_size'] + '[*]'
+                        out_str = "{0:<2}, {1:<3}, 0x{2:08x} ~ 0x{3:08x}, used:{4:<18}, config:{5:<8}, unused:{6:<18} bytes".format( map_item['seg_type'], map_item['seg_sub_type'],int(map_item['seg_start'],16),int(map_item['seg_end'],16),map_item['seg_size'],map_item['config_size'],map_item['unused_size'])
+                        #out_str = "type: {0:<4}, sub_type: {1:<4}, seg range: 0x{2:08x} ~ 0x{3:08x} , used size: {4:<16} , config size: {5:<8}, unused size: {6:<16} bytes".format( map_item['seg_type'], map_item['seg_sub_type'],int(map_item['seg_start'],16),int(map_item['seg_end'],16),map_item['seg_size'],map_item['config_size'],map_item['unused_size'])
                         print(out_str)
                         f_out.write(out_str+'\n')
-            out_str  = "== Total Unused(Hole) Memory: {0:<8} bytes ==".format(total_unused)
+            out_str  = "== Above [*] means size need to double due to the duplicated segment ==\n"
+            out_str  += "== Total Unused(Hole) Memory: {0:<8} bytes (Including OS Heap in XDD) ==".format(total_unused)
             print (out_str)
             f_out.write(out_str+'\n')
             f_out.close()
@@ -218,8 +247,8 @@ def main():
         sys.exit(-1)
     except OSError as err:
         print("[ERR] OS error: {0}".format(err))
-    #except ValueError as err:
-    #    print("[ERR] ValueError: {0}".format(err))
+    except ValueError as err:
+        print("[ERR] ValueError: {0}".format(err))
     #except:
     #    print("[ERR] Unknown error")
     finally:
