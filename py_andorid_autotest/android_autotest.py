@@ -113,7 +113,7 @@ def voice_match_stress(debug):
             page_on_click('Continue')
             page_on_click('Voice model')
             page_on_click('Retrain voice model')
-            for i in range(6):
+            for i in range(4):
                 exec_sox_plbk('./ok_google_one_trigger_short.wav')
                 sleep(2)
             page_on_click('Finish')
