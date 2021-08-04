@@ -158,7 +158,6 @@ def voice_match_stress(debug):
     if debug == 0 :
         on_key_home()
         #on_key_back()
-        #capture_dmesg()
         start_activity('com.google.android.googlequicksearchbox/com.google.android.apps.gsa.velvet.ui.settings.SettingsActivity')
         page_on_click('Voice')
         page_on_click('Voice Match')
@@ -180,7 +179,6 @@ def voice_match_stress(debug):
                 sleep(2)
             ret_vm =  page_on_click('Finish')
             if ret_vm == 0:
-                get_dmesg_log()
                 return  -1 
         else:
             print("INFO:Voice Match OFF")
@@ -211,11 +209,13 @@ if __name__ == "__main__":
     if len(sys.argv) > 2 :
         debug = int(sys.argv[2])
     if debug == 0 :
+        #capture_dmesg()
         #print(loop_cnt)
         for i in range(loop_cnt):
             vs_ret = voice_match_stress(debug)
             if vs_ret < 0:
                 print("FAIL: VOICE_MATCH_TEST FAIL")
                 break
+        #get_dmesg_log()
     else:
        voice_match_stress(debug)
