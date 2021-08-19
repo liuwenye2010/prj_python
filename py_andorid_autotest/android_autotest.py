@@ -12,7 +12,7 @@ import unittest
 from lxml import etree
 #from xml.etree.ElementTree import ElementTree
 
-
+#from android_keyevent_table import KEYEVENT_CODE_MAP
 
 def exec_adb(cmd): 
     return subprocess.check_output(('adb %s'%cmd).split(' '))
