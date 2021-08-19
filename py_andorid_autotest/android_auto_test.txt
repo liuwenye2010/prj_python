@@ -1,0 +1,128 @@
+adb 命令
+
+采用tcpip连接手机（需要电脑和手机在同一个局域网下）
+// 先usb连接手机，设置手机tcp连接端口为5555
+
+adb tcpip 5555
+
+// 断开usb，采用tcpip连接手机
+
+adb connect 10.33.70.165:5555
+
+// 断开tcpip连接
+
+adb disconnect 10.33.70.165:5555
+
+获取App信息
+// 获取当前界面元素
+
+adb shell dumpsys activity top
+
+// 获取App入口
+
+adb shell dumpsys activity activities
+
+// 启动app
+
+adb shell am start -W -n com.xueqiu.android/.view.WelcomeActivityAlias -S
+
+// 获取当前界面元素 adb shell dumpsys activity top
+
+操作手机（输入，按键，点击，滑动）
+adb shell text/keyevent/tapswipe/press/roll
+
+cmd 命令行中执行adb shell dumpsys package app包名
+
+
+关闭App
+1，cmd命令行中执行 adb shell am force-stop app包名
+
+例如：adb shell am force-stop com.android.settings关闭系统设置；
+
+2，cmd命令行中执行 adb shell pm clear app包名
+
+例如adb shell pm clear app com.android.settings 关闭系统设置
+————————————————
+版权声明：本文为CSDN博主「Ang_qq_252390816」的原创文章，遵循CC 4.0 BY-SA版权协议，转载请附上原文出处链接及本声明。
+原文链接：https://blog.csdn.net/ezconn/article/details/99885715
+
+
+==
+
+adb shell dumpsys  package > ./packages.txt
+adb shell am  start -n com.google.android.apps.googleassistant/.AssistantActivity
+
+
+com.android.hotwordenrollment.okgoogle
+
+
+#C:\Users\johl\Desktop>adb shell  dumpsys  activity | findstr  "mFocused"
+#  mFocusedApp=ActivityRecord{f526d53 u0 com.google.android.googlequicksearchbox/com.google.android.apps.gsa.velvet.ui.settings.SettingsActivity t60}
+#    mFocusedWindow=Window{1ceb8f9 u0 com.google.android.googlequicksearchbox/com.google.android.apps.gsa.velvet.ui.settings.SettingsActivity}
+#adb shell am  start -n  com.google.android.googlequicksearchbox/com.google.android.apps.gsa.velvet.ui.settings.SettingsActivity
+#stop_activity('com.google.android.googlequicksearchbox/com.google.android.apps.gsa.velvet.ui.settings.SettingsActivity')
+
+adb shell  dumpsys window | findstr "Focused"
+C:\Users\johl\Desktop>adb shell  dumpsys window | findstr "mFocused"
+  mFocusedApp=ActivityRecord{c0ea8be u0 com.google.android.googlequicksearchbox/com.google.android.apps.search.googleapp.activity.GoogleAppActivity t47}
+    mFocusedWindow=Window{2c5c021 u0 com.google.android.googlequicksearchbox/com.google.android.apps.search.googleapp.activity.GoogleAppActivity}
+	
+C:\Users\johl\Desktop>adb shell  dumpsys window | findstr "mFocused"
+  mFocusedApp=ActivityRecord{83b71a3 u0 com.google.android.googlequicksearchbox/com.google.android.apps.gsa.staticplugins.opa.OpaActivity t49}
+    mFocusedWindow=Window{f2dda56 u0 com.google.android.googlequicksearchbox/com.google.android.apps.gsa.staticplugins.opa.OpaActivity}
+
+        #adb shell getevent  -p | grep -e "0035" -e "0036
+        # $ adb shell getevent  -p | grep -e "0035" -e "0036"
+        #                 0035  : value 0, min 0, max 1600, fuzz 0, flat 0, resolution 0
+        #                 0036  : value 0, min 0, max 2560, fuzz 0, flat 0, resolution 0
+        #                 0035  : value 0, min 0, max 2644, fuzz 0, flat 0, resolution 31
+        #                 0036  : value 0, min 0, max 1440, fuzz 0, flat 0, resolution 31
+        #                 0031  0032  0033  0034  0035  0036  0037  0038
+
+        #adb shell getevent  | grep -e "0035" -e "0036"
+
+
+adb shell  dumpsys  activity | findstr  "mFocused"
+C:\Users\johl\Desktop>adb shell  dumpsys  activity | findstr  "mFocused"
+  mFocusedApp=ActivityRecord{840eb13 u0 com.google.android.googlequicksearchbox/com.google.android.apps.gsa.searchnow.SearchNowActivity t55}
+    mFocusedWindow=Window{d11eb44 u0 com.google.android.googlequicksearchbox/com.google.android.apps.gsa.searchnow.SearchNowActivity}
+
+第一步：上传应用
+adb push <apk当前绝对路径> <apk上传路径>
+
+第二步：安装应用
+adb shell pm install -t -r <apk所在路径>
+
+第三步：查看包名
+adb shell pm list package -f
+johl@PC11F0B8 ~/expr/exprj/prj_github/prj_python/py_andorid_autotest
+$ adb shell pm list package -f   | grep assistant
+package:/product/priv-app/AssistantShell/AssistantShell.apk=com.google.android.apps.googleassistant
+
+第四步：查看启动Activity类名
+4-1：adb shell
+4-2: dumpsys package <应用包名>
+4-3：找到Category为Launcher的Activity
+johl@PC11F0B8 ~/expr/exprj/prj_github/prj_python/py_andorid_autotest
+$ adb shell dumpsys  package com.google.android.apps.googleassistant
+Activity Resolver Table:
+  Non-Data Actions:
+      android.intent.action.MAIN:
+        ea04188 com.google.android.apps.googleassistant/.AssistantActivity filter 5638721
+          Action: "android.intent.action.MAIN"
+          Category: "android.intent.category.LAUNCHER"
+
+第五步：启动应用
+adb shell am start -n <应用包名>/<应用启动Activity绝对名称>
+
+johl@PC11F0B8 ~/expr/exprj/prj_github/prj_python/py_andorid_autotest
+$ adb shell am start -n  com.google.android.apps.googleassistant/.AssistantActivity
+Starting: Intent { cmp=com.google.android.apps.googleassistant/.AssistantActivity }
+
+
+C:\Users\johl\Desktop>adb shell dumpsys  power   | findstr Display | findstr Power
+  PowerManagerService.Display: ref count=1
+Display Power: state=ON
+
+
+shell dumpsys input_method | grep mScreenOn
