@@ -3,7 +3,7 @@
 #
 # A simple calculator with variables.
 # https://github.com/dabeaz/ply
-# https://ply.readthedocs.io/en/latest/
+# https://ply.readthedocs.io/en/latest/  for the documents 
 # -----------------------------------------------------------------------------
 
 tokens = (
